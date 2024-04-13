@@ -1,0 +1,140 @@
+﻿@model ProfileViewModel
+
+<div class="container">
+    <div class="text-center m-4">
+        <h2>@Model.User.username</h2>
+    </div>
+    <div class="d-flex justify-content-center">
+        <div class="card p-5 w-75">
+            <div class="row gy-2">
+                <div class="col-12">
+
+                    <p class="lead">Height</p>
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="mb-3">
+                                <div class="input-group mb-3">
+                                    @if (Model.User.height == null)
+                                    {
+                                        <input type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" id="heightFeet">
+                                    }
+                                    else
+                                    {
+                                        <input type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" disabled value="@(Model.User.height / 12)" id="heightFeet">
+                                    }
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">Feet</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="mb-3">
+                                <div class="input-group mb-3">
+                                    @if (Model.User.height == null)
+                                    {
+                                        <input type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" id="heightInches">
+                                    }
+                                    else
+                                    {
+                                        <input type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" disabled value="@(Model.User.height % 12)" id="heightInches">
+                                    }
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">Inches</span>
+                                    <button class="btn btn-outline-primary border-0" id="editHeight">
+                                        <i class="bi bi-pen"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <p class="lead">Weight</p>
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="mb-3">
+                                <div class="input-group mb-3">
+                                    @if (Model.User.weight == null)
+                                    {
+                                        <input type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" id="weight">
+                                    }
+                                    else
+                                    {
+                                        <input type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" disabled value="@Model.User.weight" id="weight">
+                                    }
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">Lbs</span>
+                                    <button class="btn btn-outline-primary border-0" id="editWeight">
+                                        <i class="bi bi-pen"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 d-flex">
+                    <div class="">
+                        <label for="userName" class="form-label">User Name</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="userName" value="@Model.User.username" disabled>
+                            <button class="btn btn-outline-primary border-0" id="editUsername">
+                                <i class="bi bi-pen"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="col-4">
+                    <div class="">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" value="@Model.User.password" disabled>
+                            <button class="btn btn-outline-primary border-0" id="editPassword">
+                                <i class="bi bi-pen"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5 offset-7">
+                    <div class="float-end">
+                        <button type="button" class="btn btn-outline-success" id="applyBtn">Apply Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $("#editUsername").click(function () {
+            $("#userName").prop("disabled", false);
+        });
+        $("#editPassword").click(function () {
+            $("#password").prop("disabled", false);
+        });
+        $("#editHeight").click(function () {
+            $("#heightFeet, #heightInches").prop("disabled", false);
+        });
+        $("#editWeight").click(function () {
+            $("#weight").prop("disabled", false);
+        });
+        $("#applyBtn").click(function () {
+            let realHeight = Number($("#heightFeet").val() * 12) + Number($("#heightInches").val());
+            let data = {
+                'body.height': realHeight,
+                'body.weight': $("#weight").val(),
+                'body.username': $("#userName").val(),
+                'body.password': $("#password").val()
+            };
+            console.log(data);
+            $.ajax({
+                url: "/Home/UpdateUser", 
+                method: "POST",
+                data: data,
+                success: function (response) {
+                    location.reload();
+                }
+            })
+        });
+    </script>
+}

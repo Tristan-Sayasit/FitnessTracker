@@ -1,0 +1,105 @@
+﻿@model SplitsViewModel
+
+<div class="container">
+    <div class="text-center">
+        <h2>Splits</h2>
+    </div>
+    <div class="row mt-4">
+        <div class="col-4 offset-4 d-flex justify-content-center">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="selectedDropdown">
+                    Dropdown button
+                </button>
+                <ul class="dropdown-menu">
+                    @foreach (var split in Model.Splits)
+                    {
+                        <li>
+                            <a class="dropdown-item" href="#">@split.split_name</a>
+                            <input type="hidden" value="@split.split_id"/>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="col-2 offset-2">
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Split</button>
+        </div>
+        <div class="col-12">
+            <div class="card p-3 m-3">
+                <div class="row gx-2 gy-2" id="splitContainer">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Create Split</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="Enter Split Name">
+                    <label for="floatingInput">Enter Split Name</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveSplit">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $("#saveSplit").click(function () {
+            let data = {
+                'body.split_name': $("#floatingInput").val()
+            };
+            $.ajax({
+                url: "/Workout/CreateSplit",
+                method: "POST",
+                data: data,
+                success: function (response) {
+                    location.reload();
+                }
+            })
+        });
+        $(".dropdown-item").click(function () {
+            $("#selectedDropdown").text($(this).text());
+            let splitid = $($(this).siblings("input")).val();
+            let data = {
+                'splitid': splitid
+            };
+            $.ajax({
+                url: "/Workout/GetSplitDaysFromSplit",
+                method: "GET",
+                data: data,
+                success: function (response) {
+                    let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                    $("#splitContainer").empty();
+                    for (let item of response) {
+                        let date = new Date(item.day_of_week);
+                        let html = `<div class="col-3">
+                                <div class="card">
+                                    <div class="text-center">
+                                        ${days[date.getDay()]}
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            <p>Bench Press 135 4x5</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                        $("#splitContainer").append(html);
+                    }
+                }
+            })
+        });
+    </script>
+}

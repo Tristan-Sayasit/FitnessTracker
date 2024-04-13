@@ -1,0 +1,26 @@
+Dashboard
+- Display username
+- Display current split day
+- Display split workouts for day
+- Current date
+
+Splits
+- User names their split days
+- Store split days
+
+Workouts
+- Store name of workout
+- Store what day workout is tied to
+- Store weight history
+- Store sets and reps
+- Ability to mark workouts complete (once complete, workout day is marked as finishwed)
+
+Workout Plans
+- Store workout plan name
+- Store which plan is selected
+
+Profile
+- Change username
+- Change password
+- Store body weight
+- Store height
